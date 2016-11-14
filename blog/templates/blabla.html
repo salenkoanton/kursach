@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}" />
+
+    <title>Passport</title>
+</head>
+<body>
+    <div class="container">
+
+      <form class="form-signin" action = "/passport" method="POST">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="input-block-level" placeholder="Email address">
+        <input type="password" class="input-block-level" placeholder="Password">
+        <input type="submit" value = "Sign in">
+      </form>
+
+    </div>
+</body>
+</html>
