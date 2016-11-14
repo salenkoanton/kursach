@@ -10,6 +10,14 @@ from .models import Post, Comment
 import sys
 from django.http import HttpResponse
 
+def wall(request, path):
+    try:
+        posts = User.objects.get(id=int(path)).posts.all()
+    except:
+        posts = []
+        print ()
+    return render(request, "wall.html", {'posts': posts})
+
 def main(request) :
     return render(request, "index.html", {})
 

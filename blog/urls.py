@@ -6,6 +6,6 @@ urlpatterns = [
     url("^passport", views.passport, name = "pasport"),
     url("^prods/(\d+)/$", views.prods_id.as_view(), name="prods_id"),
     url("^prods$", views.prods, name = "prods"),
-
+    url("^(\d+)/wall", views.wall, name = "wall")
 
 ]

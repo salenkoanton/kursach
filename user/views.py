@@ -74,3 +74,18 @@ def users(request):
         return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
     print(response_data)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+def login(request):
+    body = request.body.decode('utf-8')
+    print(body)
+    params = dict([p.split('=') for p in body.split('&')])
+    return render(request, 'login.html', {})
+def auth(request):
+    body = request.body.decode('utf-8')
+    print(body)
+    try:
+        params = dict([p.split('=') for p in body.split('&')])
+        User.objects.create(name = params['nickname'], email = params['email'], password = params['password'], birthdate = params['birthdate'])
+    except ValueError:
+        params = {}
+
+    return render(request, 'auth.html', {})
