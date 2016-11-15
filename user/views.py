@@ -7,7 +7,7 @@ from .models import User
 from blog.models import Post, Comment
 import sys
 from django.http import HttpResponse
-
+from django.contrib.auth.models import User as DJangoUser
 class Users_id(View):
     def get(self, request, path):
         try:
@@ -45,7 +45,7 @@ class Users_id_wall(View):
         params = dict([p.split('=') for p in params_to_parse.split('&')])
         try:
             print(params)
-            Post.objects.create(text=params['text'], creator=User.objects.get(id=int(params['creator'])))
+            Post.objects.create(text=params['text'], creator=User.objects.get(id=int(params['creator'], owner=User.objects.get(id=int(path)))))
         except:
             print('not post post')
             print("Unexpected error:", sys.exc_info())
@@ -81,11 +81,22 @@ def login(request):
     return render(request, 'login.html', {})
 def auth(request):
     body = request.body.decode('utf-8')
+    params = {}
     print(body)
     try:
         params = dict([p.split('=') for p in body.split('&')])
-        User.objects.create(name = params['nickname'], email = params['email'], password = params['password'], birthdate = params['birthdate'])
+        user = DJangoUser.objects.create_user(params['firstname'], params['email'], params['password'])
+        user.last_name = params['lastname']
+        user.save()
+        cus_us = User.objects.create(djangoUser = user, birthdate = params['birthdate'])
+        if params['sex'] == 'male':
+            cus_us.sex = True
+            cus_us.avatar = User.MALE_AVATAR
+        else:
+            cus_us.sex = False
+            cus_us.avatar = User.FEMALE_AVATAR
+        cus_us.save()
     except ValueError:
         params = {}
-
+    print(params)
     return render(request, 'auth.html', {})

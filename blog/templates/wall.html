@@ -40,13 +40,31 @@
       <h3 class="text-muted logo"><img src="{% static 'img/logo.png'%}">Na-na-na</h3>
     </div>
     <div class="container">
+        <div class="row marketing info">
+            <div class="col-lg-6">
+                <img src="{{ user.avatar.file.url }}" class="avatar">
+             </div>
+            <div class="col-lg-6">
+                <p>Name: {{user.name}}</p>
+                <p>Birthdate: {{user.birthdate}}</p>
+                <p><a href="#">Followers</a></p>
+                <p><a href="#">Audio</a></p>
+            </div>
+        </div>
+
       <div class="row marketing">
+          <h2>Wall</h2>
         <div class="col-lg-12">
           {% for post in posts %}
             <div class="post">
-                <h4 class="user-container"><img src="{% static 'img/logo.png'%}" class="avatar">{{ post.creator.name }}</h4>
+                <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="#">{{ post.creator.name }}</a></h4>
               <p> {{ post.text }} </p>
-              <hr>
+                <div class="pull-right">
+                    <a href="#">Like</a>
+                    <a href="#">Comment</a>
+                </div>
+              <br>
+                <hr>
             </div>
             {% endfor %}
         </div>

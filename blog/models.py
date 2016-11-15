@@ -5,8 +5,9 @@ from user.models import User, Author, Image
 
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
-    text = models.TextField()
-    creator = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='posts')
+    text = models.TextField(null=True)
+    creator = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='created_posts', null=True)
+    owner = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='wall', null=True)
     audio = models.ManyToManyField('audio.Audio', related_name='post')
     image = models.ManyToManyField('user.Image', related_name='post')
     likes = models.ManyToManyField('user.User', related_name='liked')
