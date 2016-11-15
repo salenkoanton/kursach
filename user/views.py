@@ -8,7 +8,10 @@ from blog.models import Post, Comment
 import sys
 from django.http import HttpResponse
 from django.contrib.auth.models import User as DJangoUser
+from django.contrib.auth.decorators import login_required
+
 class Users_id(View):
+    @login_required(login_url='/login/')
     def get(self, request, path):
         try:
             response_data = User.objects.get(id=int(path)).dict()
@@ -19,6 +22,8 @@ class Users_id(View):
             return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
         print(response_data)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+    @login_required(login_url='/login/')
     def post(self, request, path):
         params_to_parse = request.META['QUERY_STRING']
         print(request.get_full_path())
@@ -30,6 +35,7 @@ class Users_id(View):
             print('not follow')
         return self.get(request, path)
 class Users_id_wall(View):
+    @login_required(login_url='/login/')
     def get(self, request, path):
         try:
             response_data = [i.dict() for i in User.objects.get(id=int(path)).posts.all()]
@@ -40,6 +46,8 @@ class Users_id_wall(View):
             return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
         print(response_data)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+    @login_required(login_url='/login/')
     def post(self, request, path):
         params_to_parse = request.META['QUERY_STRING']
         params = dict([p.split('=') for p in params_to_parse.split('&')])
@@ -55,6 +63,7 @@ class Users_id_wall(View):
 
 
 class Users_id_followers(View):
+    @login_required(login_url='/login/')
     def get(self, request, path):
         try:
             response_data = [i.dict() for i in User.objects.get(id=int(path)).followers.all()]
@@ -65,7 +74,7 @@ class Users_id_followers(View):
             return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
         print(response_data)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
-
+@login_required(login_url='/login/')
 def users(request):
     try:
         response_data = [i.dict() for i in User.objects.all()]
@@ -74,11 +83,14 @@ def users(request):
         return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
     print(response_data)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
-def login(request):
-    body = request.body.decode('utf-8')
-    print(body)
-    params = dict([p.split('=') for p in body.split('&')])
-    return render(request, 'login.html', {})
+class Login(View):
+    def get(self, request):
+        return render(request, 'login.html', {})
+    def post(self, request):
+        body = request.body.decode('utf-8')
+        print(body)
+        params = dict([p.split('=') for p in body.split('&')])
+        return render(request, 'login.html', {})
 def auth(request):
     body = request.body.decode('utf-8')
     params = {}
@@ -90,10 +102,10 @@ def auth(request):
         user.save()
         cus_us = User.objects.create(djangoUser = user, birthdate = params['birthdate'])
         if params['sex'] == 'male':
-            cus_us.sex = True
+            cus_us.sex = 'male'
             cus_us.avatar = User.MALE_AVATAR
         else:
-            cus_us.sex = False
+            cus_us.sex = 'female'
             cus_us.avatar = User.FEMALE_AVATAR
         cus_us.save()
     except ValueError:
