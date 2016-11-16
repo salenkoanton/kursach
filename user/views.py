@@ -3,7 +3,7 @@ from django.shortcuts import render
 import json
 from django.forms.models import modelform_factory
 from django.views.generic import View
-from .models import User
+from .models import User, Image, Author
 from blog.models import Post, Comment
 import sys
 from django.http import HttpResponse
@@ -12,8 +12,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout as djlogout
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 class Users_id(View):
-    @login_required(login_url='/login/')
+    @method_decorator(login_required(login_url='/login/'))
     def get(self, request, path):
         try:
             response_data = User.objects.get(id=int(path)).dict()
@@ -25,7 +26,7 @@ class Users_id(View):
         print(response_data)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    @login_required(login_url='/login/')
+    @method_decorator(login_required(login_url='/login/'))
     def post(self, request, path):
         params_to_parse = request.META['QUERY_STRING']
         print(request.get_full_path())
@@ -37,7 +38,7 @@ class Users_id(View):
             print('not follow')
         return self.get(request, path)
 class Users_id_wall(View):
-    @login_required(login_url='/login/')
+    @method_decorator(login_required(login_url='/login/'))
     def get(self, request, path):
         try:
             response_data = [i.dict() for i in User.objects.get(id=int(path)).posts.all()]
@@ -49,7 +50,7 @@ class Users_id_wall(View):
         print(response_data)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-    @login_required(login_url='/login/')
+    @method_decorator(login_required(login_url='/login/'))
     def post(self, request, path):
         params_to_parse = request.META['QUERY_STRING']
         params = dict([p.split('=') for p in params_to_parse.split('&')])
@@ -65,7 +66,7 @@ class Users_id_wall(View):
 
 
 class Users_id_followers(View):
-    @login_required(login_url='/login/')
+    @method_decorator(login_required(login_url='/login/'))
     def get(self, request, path):
         try:
             response_data = [i.dict() for i in User.objects.get(id=int(path)).followers.all()]
@@ -149,3 +150,8 @@ def auth(request):
             params = {}
         print(params)
         return render(request, 'auth.html', {})
+def main(request):
+    return render(request, "main.html", {request})
+def author(request, path):
+    a = Author.objects.get(id = int(path))
+    return render(request, "author.html", {'author': a})
