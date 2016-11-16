@@ -37,8 +37,7 @@ class Wall(View):
             except:
                 print("Unexpected error:", sys.exc_info())
         if ('audio' in request.POST):
-            try:
-                Audio.objects.create()
+            f = 4 #TODO
 
         try:
             posts = User.objects.get(id=int(path)).wall.all()
