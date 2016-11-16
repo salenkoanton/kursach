@@ -27,7 +27,7 @@ class User(models.Model):
     def dict(self):
         return {'id': self.id,
                 'name': self.djangoUser.username + ' ' + self.djangoUser.last_name,
-                'sex': self.sex,
+                'sex': self.get_sex_display(),
                 'avatar': self.avatar.id,
                 'followers': [{'id': i.id} for i in self.followers.all()],
                 'audio': [{'id': i.id,

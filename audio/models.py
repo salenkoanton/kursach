@@ -19,7 +19,7 @@ class Audio(models.Model):
     text = models.TextField()
     author = models.ForeignKey('user.Author', on_delete=models.CASCADE, related_name='audio')
     name = models.CharField(max_length=100)
-    file = models.FileField(default=None)
+    file = models.FileField(upload_to = 'audio/', default=None)
     type = ArrayField(models.CharField(max_length=5, choices=TYPE), size = 40)
     duration = models.TimeField(default=None)
     def dict(self):

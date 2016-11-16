@@ -9,7 +9,9 @@ import sys
 from django.http import HttpResponse
 from django.contrib.auth.models import User as DJangoUser
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout as djlogout
+from django.shortcuts import redirect
 class Users_id(View):
     @login_required(login_url='/login/')
     def get(self, request, path):
@@ -53,7 +55,7 @@ class Users_id_wall(View):
         params = dict([p.split('=') for p in params_to_parse.split('&')])
         try:
             print(params)
-            Post.objects.create(text=params['text'], creator=User.objects.get(id=int(params['creator'], owner=User.objects.get(id=int(path)))))
+            Post.objects.create(text=params['text'], creator=User.objects.get(id=int(params['creator'])), owner=User.objects.get(id=int(path)))
         except:
             print('not post post')
             print("Unexpected error:", sys.exc_info())
@@ -83,32 +85,67 @@ def users(request):
         return HttpResponse(json.dumps({'error massage': 'server error'}), content_type="application/json")
     print(response_data)
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+class Logout(View):
+    def get(self, request):
+        djlogout(request)
+        return redirect('/login/')
+
 class Login(View):
     def get(self, request):
         return render(request, 'login.html', {})
     def post(self, request):
-        body = request.body.decode('utf-8')
-        print(body)
-        params = dict([p.split('=') for p in body.split('&')])
-        return render(request, 'login.html', {})
-def auth(request):
-    body = request.body.decode('utf-8')
-    params = {}
-    print(body)
-    try:
-        params = dict([p.split('=') for p in body.split('&')])
-        user = DJangoUser.objects.create_user(params['firstname'], params['email'], params['password'])
-        user.last_name = params['lastname']
-        user.save()
-        cus_us = User.objects.create(djangoUser = user, birthdate = params['birthdate'])
-        if params['sex'] == 'male':
-            cus_us.sex = 'male'
-            cus_us.avatar = User.MALE_AVATAR
+        params = request.POST
+        print(params['email'])
+        if params['email'].find('@') == -1:
+            username = params['email']
         else:
-            cus_us.sex = 'female'
-            cus_us.avatar = User.FEMALE_AVATAR
-        cus_us.save()
-    except ValueError:
-        params = {}
-    print(params)
-    return render(request, 'auth.html', {})
+            try:
+                username = User.objects.get(djangoUser__email = params['email']).djangoUser.username
+            except:
+                print('error')
+                username = None
+                return render(request, 'login.html', {})
+        user = authenticate(username=username, password=params['password'])
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                try:
+                    print(request.GET['next'])
+                    return redirect(request.GET['next'])
+                except:
+                    return redirect('/blog/' + str(user.customUser.id) + '/wall')
+            else:
+                return HttpResponse(json.dumps({'login': 'error disabled'}), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({'login': "error pass don't manch"}), content_type="application/json")
+def auth(request):
+    if request.method == 'GET':
+        return render(request, 'auth.html', {})
+    elif request.method == 'POST':
+        params = request.POST
+        print(params.keys())
+        try:
+            try:
+                user = DJangoUser.objects.get(username = params['username'])
+                if user is not None:
+                    return render(request, 'auth.html', {})
+                user = DJangoUser.objects.get(email=params['email'])
+                if user is not None:
+                    return render(request, 'auth.html', {})
+            except:
+                print(params)
+            user = DJangoUser.objects.create_user(params['username'], params['email'], params['password'])
+            user.last_name = params['firstname'] + ' ' + params['lastname']
+            user.save()
+            cus_us = User.objects.create(djangoUser = user, birthdate = params['birthdate'])
+            if params['sex'] == 'male':
+                cus_us.sex = 'male'
+                cus_us.avatar = User.MALE_AVATAR
+            else:
+                cus_us.sex = 'female'
+                cus_us.avatar = User.FEMALE_AVATAR
+            cus_us.save()
+        except ValueError:
+            params = {}
+        print(params)
+        return render(request, 'auth.html', {})

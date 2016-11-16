@@ -30,6 +30,7 @@
         <li class="active"><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
+          <li><a href="/logout/">Logout</a> </li>
         <li><form class="navbar-form navbar-left" role="search">
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search">
@@ -45,8 +46,8 @@
                 <img src="{{ user.avatar.file.url }}" class="avatar">
              </div>
             <div class="col-lg-4 info">
-                <p>Name: {{user.DJangoUser.username}}</p>
-                <p>Last name: {{user.DJangoUser.last_name}}</p>
+                <p>Name: {{user.djangoUser.username}}</p>
+                <p>Last name: {{user.djangoUser.last_name}}</p>
                 <p>Birthdate: {{user.birthdate}}</p>
                 <p>Sex: {{user.get_sex_display}}</p>
                 <p><a href="#">Followers</a></p>
@@ -61,9 +62,14 @@
       <div class="row marketing">
           <h2>Wall</h2>
         <div class="col-lg-12">
+            <form class="form-post" role="form" method="post">
+                <textarea class="form-control" rows="5" placeholder="Write smth" required name="post_text"></textarea>
+                <input type="file" accept="audio/*" name="audio" placeholder="add audio...">
+                <button class="btn pull-right" type="submit">Post</button>
+            </form>
           {% for post in posts %}
             <div class="post">
-                <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="#">{{ post.creator.name }}</a></h4>
+                <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="#">{{ post.creator.djangoUser.last_name }}</a></h4>
               <p> {{ post.text }} </p>
                 <div class="pull-right">
                     <a href="#">Like</a>
