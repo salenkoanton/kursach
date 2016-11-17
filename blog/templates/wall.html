@@ -27,7 +27,8 @@
   <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
-        <li class="active"><a href="#">Home</a></li>
+        <li class="active"><a href="/blog/{{you.id}}/wall">Home</a></li>
+          <li><a href="/audio/">Playlist</a> </li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="/logout/">Logout</a> </li>
@@ -35,7 +36,7 @@
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search">
           </div>
-          <button type="submit" class="btn btn-default btn-sm">Отправить</button>
+          <button type="submit" class="btn btn-default btn-sm">Search..</button>
         </form></li>
       </ul>
       <h3 class="text-muted logo"><img src="{% static 'img/logo.png'%}">Na-na-na</h3>
@@ -47,11 +48,18 @@
              </div>
             <div class="col-lg-4 info">
                 <p>Name: {{user.djangoUser.username}}</p>
+                <p>First name: {{user.djangoUser.first_name}}</p>
                 <p>Last name: {{user.djangoUser.last_name}}</p>
                 <p>Birthdate: {{user.birthdate}}</p>
                 <p>Sex: {{user.get_sex_display}}</p>
-                <p><a href="#">Followers</a></p>
-                <p><a href="#">Audio</a></p>
+                <p><a href="/blog/{{user.id}}/followers">Followers</a></p>
+                <p><a href="/audio/{{user.id}}">Audio</a></p>
+                {% if you != user %}
+                <form class="pull-left" role="form" method="post">
+                    <input value="{{user.id}}" name="follow" hidden>
+                    <button class="btn pull-right dropdown" type="submit">{%if you in user.followers.all%}Unfollow{%else%}Follow{%endif%}</button>
+                </form>
+                {% endif %}
             </div>
         <div class="col-lg-2"></div>
 
@@ -64,16 +72,51 @@
         <div class="col-lg-12">
             <form class="form-post" role="form" method="post">
                 <textarea class="form-control" rows="5" placeholder="Write smth" required name="post_text"></textarea>
-                <input type="file" accept="audio/*" name="audio" placeholder="add audio...">
                 <button class="btn pull-right" type="submit">Post</button>
             </form>
+            <script>
+                function showComments(id) {
+                    x = document.getElementById(id);
+                    if(x.hasAttribute("hidden")){
+                          x.removeAttribute("hidden");
+                        }
+                    else{
+                    x.setAttribute("hidden", true);}
+                }
+            </script>
           {% for post in posts %}
             <div class="post">
-                <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="#">{{ post.creator.djangoUser.last_name }}</a></h4>
+                <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="/blog/{{post.creator.id}}/wall">{{ post.creator.djangoUser.first_name }} {{ post.creator.djangoUser.last_name }}</a></h4>
               <p> {{ post.text }} </p>
                 <div class="pull-right">
-                    <a href="#">Like</a>
-                    <a href="#">Comment</a>
+                    <form class="pull-right likes" role="form" method="post">
+                        <input type="hidden" name = "like" value="{{post.id}}">
+                        <button class="btn pull-right dropdown" type="submit">Like
+                        </button>
+                        <ul class="liked">
+                        {% for user in post.likes.all.reverse|slice:":5" %}
+                        <li>
+                            <a href="/blog/{{user.id}}/wall"><img src="{{user.avatar.file.url}}" title="{{user.djangoUser.first_name}} {{user.djangoUser.last_name}}" class="avatar-ico"></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    </form>
+
+                    <button class="btn" onclick="showComments('comments-{{post.id}}')">Comments</button>
+
+                </div>
+                <div class = "row marketing" id="comments-{{post.id}}" hidden>
+                    <hr>
+                    {% for comment in post.comments.all %}
+                        <h5 class="user-container"><img src="{{ comment.owner.avatar.file.url }}" class="avatar-ico"><a href="blog/{{comment.owner.id}}/wall">{{ comment.owner.djangoUser.first_name }} {{ comment.owner.djangoUser.last_name }}</a></h5>
+                        <p> {{ comment.text }} </p>
+                        <hr>
+                    {% endfor %}
+                    <form class="form-post" role="form" method="post">
+                        <textarea class="form-control" rows="3" placeholder="Write smth" required name="comment_text"></textarea>
+                        <input type="hidden" name = "id" value="{{post.id}}">
+                        <button class="btn pull-right" type="submit">Comment</button>
+                    </form>
                 </div>
               <br>
                 <hr>

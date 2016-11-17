@@ -25,19 +25,41 @@ class Wall(View):
         except:
             posts = []
             print ()
-        return render(request, "wall.html", {'posts': posts, 'user': user})
+        return render(request, "wall.html", {'posts': posts, 'user': user, 'you': request.user.customUser})
 
     @method_decorator(login_required(login_url='/login/'))
     def post(self, request, path):
-        if ('post_text' in request.POST):
+        print(request.POST)
+        if 'comment_text' in request.POST:
             try:
-                Post.objects.create(text = request.POST['post_text'], creator = request.user.customUser, owner = User.objects.get(id=int(path)))
-            except User.DoesNotExist:
-                return self.get(request, path)
+                Comment.objects.create(text = request.POST['comment_text'], post = Post.objects.get(id=request.POST['id']), owner = request.user.customUser)
             except:
                 print("Unexpected error:", sys.exc_info())
-        if ('audio' in request.POST):
-            f = 4 #TODO
+        elif ('post_text' in request.POST):
+            try:
+                Post.objects.create(text = request.POST['post_text'], creator = request.user.customUser, owner = User.objects.get(id=int(path)))
+            except:
+                print("Unexpected error:", sys.exc_info())
+        elif 'like' in request.POST:
+            try:
+                p = Post.objects.get(id=request.POST['like'])
+                if p.likes.filter(id = request.user.customUser.id).exists():
+                    p.likes.through.objects.get(post_id = p.id, user_id = request.user.customUser.id).delete()
+                else:
+                    p.likes.add(request.user.customUser)
+                p.save()
+            except:
+                print("Unexpected error:", sys.exc_info())
+        elif 'follow' in request.POST:
+            try:
+                u = User.objects.get(id=request.POST['follow'])
+                if u.followers.filter(id = request.user.customUser.id).exists():
+                    u.followers.through.objects.get(from_user = u, to_user = request.user.customUser).delete()
+                else:
+                    u.followers.add(request.user.customUser)
+                u.save()
+            except:
+                print("Unexpected error:", sys.exc_info())
 
         try:
             posts = User.objects.get(id=int(path)).wall.all()
@@ -47,4 +69,8 @@ class Wall(View):
         except:
             posts = []
             print ()
-        return render(request, "wall.html", {'posts': posts, 'user': user})
+        return render(request, "wall.html", {'posts': posts, 'user': user, 'you': request.user.customUser})
+@login_required(login_url='/login/')
+def followers(request, path):
+    user = User.objects.get(id=int(path))
+    return render(request, "followers.html", {'user': user, 'you': request.user.customUser})

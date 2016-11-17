@@ -129,14 +129,21 @@ def auth(request):
             try:
                 user = DJangoUser.objects.get(username = params['username'])
                 if user is not None:
-                    return render(request, 'auth.html', {})
-                user = DJangoUser.objects.get(email=params['email'])
-                if user is not None:
-                    return render(request, 'auth.html', {})
+                    return render(request, 'auth.html', {'error': 'Error, we already have a user with such name'})
             except:
                 print(params)
+                try:
+                    print(params['email'])
+                    user = DJangoUser.objects.get(email=params['email'])
+                    print(user)
+                    if user is not None:
+                       return render(request, 'auth.html', {'error': 'Error, we already have a user with such email'})
+                except:
+                    print(sys.exc_info())
+                    print('success')
             user = DJangoUser.objects.create_user(params['username'], params['email'], params['password'])
-            user.last_name = params['firstname'] + ' ' + params['lastname']
+            user.last_name = params['lastname']
+            user.first_name = params['firstname'];
             user.save()
             cus_us = User.objects.create(djangoUser = user, birthdate = params['birthdate'])
             if params['sex'] == 'male':
@@ -149,7 +156,7 @@ def auth(request):
         except ValueError:
             params = {}
         print(params)
-        return render(request, 'auth.html', {})
+        return render(request, 'auth.html', {'error': 'Invalid input'})
 def main(request):
     return render(request, "main.html", {request})
 def author(request, path):

@@ -27,8 +27,8 @@
   <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
-        <li><a href="#">Home</a></li>
-        <li class="active"><a href="#">Playlist</a></li>
+        <li><a href="/blog/{{you.id}}/wall">Home</a></li>
+        <li  {%if  user == None%}class="active"{%endif%}><a href="/audio/">Playlist</a></li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="/logout/">Logout</a> </li>
@@ -44,10 +44,10 @@
     <div class="container">
       <div class="row marketing">
           <h2>Playlist</h2>
-  <h2>Modal Example</h2>
   <!-- Trigger the modal with a button -->
+          {%if user == None%}
   <button type="button" class="btn" data-toggle="modal" data-target="#myModal">Add audio</button>
-
+    <hr>
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -81,11 +81,19 @@
 
     </div>
   </div>
+          {%endif%}
         <div class="col-lg-12">
             {% for audio in playlist %}
             <div class="post">
-                <p style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</p>
-                <audio src="{{ audio.file.url }}" controls>Your browser don't support audio!</audio>
+                <h4 style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h4>
+                <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
+                {% if audio in you.audio.all %}{% else %}
+                    <form class="pull-right" role="form" method="post">
+                        <input type="hidden" name = "add" value="{{audio.id}}">
+                        <button class="btn pull-right" type="submit">+
+                        </button>
+                    </form>
+                    {% endif %}
                 <hr>
             </div>
             {% endfor %}

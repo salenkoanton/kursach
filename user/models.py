@@ -18,7 +18,7 @@ class User(models.Model):
     djangoUser = models.OneToOneField(DJangoUser, on_delete=models.CASCADE, related_name='customUser', null=True)
     sex = models.NullBooleanField(default=True, blank=True, null=True, choices=SEX)
     created_date = models.DateTimeField(default=timezone.now, null=True)
-    followers = models.ManyToManyField('User', related_name='following')
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='following')
     avatar = models.ForeignKey('Image', on_delete=models.CASCADE, blank=True, null=True)
     birthdate = models.DateField(default=None, null=True)
     audio = models.ManyToManyField('audio.Audio', related_name='users')
@@ -31,7 +31,7 @@ class User(models.Model):
                 'avatar': self.avatar.id,
                 'followers': [{'id': i.id} for i in self.followers.all()],
                 'audio': [{'id': i.id,
-                           'author': i.author,
+                           'author_id': i.author.id,
                            'name': i.name} for i in self.audio.all()],
                 'wall': [{'id': i.id} for i in self.wall.all()]}
 class Author(models.Model):

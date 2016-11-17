@@ -29,6 +29,7 @@
 
       <form class="form-signin" role="form" method="post">
         <h2 class="form-signin-heading">Authorisation</h2>
+        {%if error%}<h4 class="alert-warning">{{error}}</h4>{%endif%}
         <input type="email" class="form-control" placeholder="Email address" required autofocus name="email">
         <input type="password" class="form-control" placeholder="Password" required name="password">
         <input type="text" class="form-control" placeholder="Nickname" required name="username">
