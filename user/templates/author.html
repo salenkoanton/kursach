@@ -27,11 +27,13 @@
   <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
-        <li><a href="#">Home</a></li>
-        <li class="active"><a href="#">Playlist</a></li>
+         {%if you != None%}
+        <li><a href="/blog/{{you.id}}/wall">Home</a></li>
+          {%endif%}
+        <li><a href="/audio/">Playlist</a></li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
-          <li><a href="/logout/">Logout</a> </li>
+          <li><a href="{%if you != None%}/logout/{%else%}/login/{%endif%}">{%if you != None%}Logout{%else%}Login{%endif%}</a> </li>
         <li><form class="navbar-form navbar-left" role="search">
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search">
@@ -39,7 +41,7 @@
           <button type="submit" class="btn btn-default btn-sm">Search..</button>
         </form></li>
       </ul>
-      <h3 class="text-muted logo"><img src="{% static 'img/logo.png'%}">Na-na-na</h3>
+      <h3 class="text-muted logo"><img src="{% static 'img/logo_grey.png'%}">Na-na-na</h3>
     </div>
     <div class="container">
         <h2>{{author.name}}</h2>
@@ -50,7 +52,7 @@
             <div class="post">
                 <h4 style="display: inline-block; vertical-align: top;">{{audio.name}}</h4>
 
-                <audio src="{{ audio.file.url }}" controls style="display: inline-block; background-color: inherit;">Your browser don't support audio!</audio>
+                <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
                 <hr>
             </div>
             {% endfor %}

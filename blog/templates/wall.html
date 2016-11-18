@@ -18,16 +18,16 @@
     <link href="{% static 'css/min.css'%}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+   <script src="http1s://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
 
   <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
-        <li class="active"><a href="/blog/{{you.id}}/wall">Home</a></li>
+        <li {%if you == user%}class="active"{%endif%}><a href="/blog/{{you.id}}/wall">Home</a></li>
           <li><a href="/audio/">Playlist</a> </li>
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
@@ -39,12 +39,12 @@
           <button type="submit" class="btn btn-default btn-sm">Search..</button>
         </form></li>
       </ul>
-      <h3 class="text-muted logo"><img src="{% static 'img/logo.png'%}">Na-na-na</h3>
+      <h3 class="text-muted logo"><img src="{% static 'img/logo_grey.png'%}">Na-na-na</h3>
     </div>
     <div class="row marketing ">
         <div class="col-lg-2"></div>
             <div class="col-lg-4">
-                <img src="{{ user.avatar.file.url }}" class="avatar">
+                <img src="{{ user.avatar.file.url }}"  class="avatar">
              </div>
             <div class="col-lg-4 info">
                 <p>Name: {{user.djangoUser.username}}</p>
@@ -59,14 +59,39 @@
                     <input value="{{user.id}}" name="follow" hidden>
                     <button class="btn pull-right dropdown" type="submit">{%if you in user.followers.all%}Unfollow{%else%}Follow{%endif%}</button>
                 </form>
+                {% else %}
+                <a href="/blog/following">Following</a>
+                <button type="button" class="btn pull-right" data-toggle="modal" data-target="#myModal">New avatar</button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Upload new image for avatar</h4>
+                        </div>
+                        <div class="modal-body">
+                          <form class="form-post" role="form" method="post" enctype="multipart/form-data">
+                                <input type="file" accept="image/jpeg image/png image/bmp image/jpg" name="image" placeholder="add image">
+                                <button class="btn pull-right" type="submit">Upload</button>
+                            </form>
+                            blabla
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
                 {% endif %}
             </div>
+
         <div class="col-lg-2"></div>
 
         </div>
     <div class="container">
-
-
       <div class="row marketing">
           <h2>Wall</h2>
         <div class="col-lg-12">
@@ -91,14 +116,16 @@
                 <div class="pull-right">
                     <form class="pull-right likes" role="form" method="post">
                         <input type="hidden" name = "like" value="{{post.id}}">
-                        <button class="btn pull-right dropdown" type="submit">Like
+                        <button class="btn pull-right dropdown" type="submit">{{post.likes.count}}♥
                         </button>
                         <ul class="liked">
-                        {% for user in post.likes.all.reverse|slice:":5" %}
-                        <li>
+
+                        {% for user in post.likes.all|slice:":5" %}<li>
                             <a href="/blog/{{user.id}}/wall"><img src="{{user.avatar.file.url}}" title="{{user.djangoUser.first_name}} {{user.djangoUser.last_name}}" class="avatar-ico"></a>
                         </li>
-                        {% endfor %}
+                            {% endfor %}
+
+
                     </ul>
                     </form>
 

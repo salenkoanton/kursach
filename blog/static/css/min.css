@@ -14,10 +14,22 @@ display:inline-block;
     visibility:hidden;
     display: inline-block;
 }
+
+body {
+    background-color: #e5e5e5;
+}
+
+.container {
+    background-color: #fff;
+    border-radius:5px;
+}
 .liked {
-    width: 160px;
-    left: -100px;
+    width: 180px;
+    left: -110px;
     position: relative;
+    background-color: #e5e5e5;
+    padding: 10px;
+    border-radius: 10px;
 }
 .liked li{
     float: right;
@@ -66,7 +78,7 @@ display:inline-block;
 
 }
 .info{
-  background-color: #f57b54;
+  background-color: #ccc;
   border-radius: 5px;
 
 }
@@ -123,7 +135,7 @@ display:inline-block;
 }
 /* Supporting marketing content */
 .marketing {
-  margin: 40px 0;
+  margin: 20px 0;
 }
 .marketing p + h4 {
   margin-top: 28px;

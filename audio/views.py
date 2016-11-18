@@ -18,6 +18,7 @@ class Playlist(View):
         user = request.user
         playlist = user.customUser.audio.all()
         return render(request, "playlist.html", {'playlist' : playlist, 'you': request.user.customUser, 'user' : None})
+    @method_decorator(login_required(login_url='/login/'))
     def post(self, request):
         user = request.user
         params = request.POST

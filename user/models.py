@@ -26,7 +26,9 @@ class User(models.Model):
         self.following.add(User.objects.get(id=user_id))
     def dict(self):
         return {'id': self.id,
-                'name': self.djangoUser.username + ' ' + self.djangoUser.last_name,
+                'username': self.djangoUser.username,
+                'first_name': self.djangoUser.first_name,
+                'last_name': self.djangoUser.last_name,
                 'sex': self.get_sex_display(),
                 'avatar': self.avatar.id,
                 'followers': [{'id': i.id} for i in self.followers.all()],
