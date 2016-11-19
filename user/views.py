@@ -5,6 +5,7 @@ from django.forms.models import modelform_factory
 from django.views.generic import View
 from .models import User, Image, Author
 from blog.models import Post, Comment
+from audio.models import Audio
 import sys
 from django.http import HttpResponse
 from django.contrib.auth.models import User as DJangoUser
@@ -174,14 +175,24 @@ def main(request):
     return render(request, "main.html", {request})
 
 
-def author(request, path):
-    if request.user.is_authenticated():
-        you = request.user.customUser;
-    else:
-        you = None
-    a = Author.objects.get(id=int(path))
-    return render(request, "author.html", {'author': a, 'you': you})
+class Author_id(View):
+    def get(self, request, path):
+        if request.user.is_authenticated():
+            you = request.user.customUser
+        else:
+            you = None
+        a = Author.objects.get(id=int(path))
+        return render(request, "author.html", {'author': a, 'you': you})
 
+
+    def post(self, request, path):
+        user = request.user
+        params = request.POST
+        try:
+            user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+        except:
+            print("Unexpected error:", sys.exc_info())
+        return self.get(request, path)
 
 def authors(request):
     if request.user.is_authenticated():

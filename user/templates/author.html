@@ -18,10 +18,9 @@
     <link href="{% static 'css/min.css'%}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-      <script src="http1s://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+       <script src="{% static 'js/jquery.js'%}"></script>
+  <script src="{% static 'js/bootstrap.min.js'%}"></script>
   </head>
 
   <body>
@@ -53,6 +52,14 @@
                 <h4 style="display: inline-block; vertical-align: top;">{{audio.name}}</h4>
 
                 <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
+
+                {% if audio in you.audio.all %}{% else %}
+                    <form class="pull-right" role="form" method="post">
+                        <input type="hidden" name = "add" value="{{audio.id}}">
+                        <button class="btn pull-right" type="submit">+
+                        </button>
+                    </form>
+                    {% endif %}
                 <hr>
             </div>
             {% endfor %}

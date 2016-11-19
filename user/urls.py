@@ -8,6 +8,6 @@ urlpatterns = [
     url(r"^(\d+)$", views.Users_id.as_view(), name="users_id"),
     url(r"^(\d+)/wall$", views.Users_id_wall.as_view(), name='wall'),
     url(r"^(\d+)/followers$", views.Users_id_followers.as_view(), name='followers'),
-    url(r'^author/(\d+)', views.author, name = 'author'),
+    url(r'^author/(\d+)', views.Author_id.as_view(), name = 'author'),
     url(r'^authors/$', views.authors, name = 'authors'),
 ]

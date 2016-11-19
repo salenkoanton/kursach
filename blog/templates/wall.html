@@ -109,7 +109,7 @@
                     x.setAttribute("hidden", true);}
                 }
             </script>
-          {% for post in posts %}
+          {% for post in posts reversed %}
             <div class="post">
                 <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="/blog/{{post.creator.id}}/wall">{{ post.creator.djangoUser.first_name }} {{ post.creator.djangoUser.last_name }}</a></h4>
               <p> {{ post.text }} </p>
