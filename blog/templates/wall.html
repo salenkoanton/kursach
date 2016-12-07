@@ -86,6 +86,15 @@
             }});
         });
     });
+    $(document).ready(function(){
+        $(".Like").click(function(){
+            btn = $(this);
+            alert(btn.attr("value"));
+            $.ajax({type: "POST", data: {like: btn.attr("value"), xhr: true}, success: function(result){
+                alert(result);
+            }});
+        });
+    });
     function audioBtnEvent(){
         $(document).ready(function(){
             $(".addAudioInInput").click(function(){
@@ -248,9 +257,7 @@
                 <hr>
                 {%endif%}
                 <div class="pull-right">
-                    <form class="pull-right likes" role="form" method="post">
-                        <input type="hidden" name = "like" value="{{post.id}}">
-                        <button class="btn pull-right dropdown" type="submit">{{post.likes.count}}♥
+                        <button class="btn pull-right dropdown Like" value="{{post.id}}">{{post.likes.count}}♥
                         </button>
                         {%if post.likes.count > 0%}
                         <ul class="liked">
@@ -264,7 +271,6 @@
 
                         </ul>
                         {%endif%}
-                    </form>
 
                     <button class="btn" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
 

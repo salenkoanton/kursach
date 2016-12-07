@@ -83,6 +83,14 @@ class Wall(View):
             except:
                 print("Unexpected error:", sys.exc_info())
         elif 'like' in request.POST:
+            user = request.user
+            params = request.POST
+            try:
+                xhr = request.POST['xhr']
+            except:
+                xhr = False
+            response_dict = {}
+            print(request.POST)
             try:
                 p = Post.objects.get(id=request.POST['like'])
                 if p.likes.filter(id = request.user.customUser.id).exists():
@@ -90,8 +98,12 @@ class Wall(View):
                 else:
                     p.likes.add(request.user.customUser)
                 p.save()
+                response_dict = {'status': 'ok'}
             except:
                 print("Unexpected error:", sys.exc_info())
+                response_dict = {'status': 'error'}
+            if xhr == 'true':
+                return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
         elif 'follow' in request.POST:
             try:
                 u = User.objects.get(id=request.POST['follow'])
