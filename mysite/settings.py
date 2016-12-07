@@ -81,16 +81,18 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mydb',
-        'USER': 'postgres',
-        'PASSWORD': 'galaxyace3110',
-        'HOST': '', # Set to empty string for localhost.
-        'PORT': '', # Set to empty string for default.
-
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'mydb',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'galaxyace3110',
+    #     'HOST': '', # Set to empty string for localhost.
+    #     'PORT': '', # Set to empty string for default.
+    #
+    # }
 }
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
