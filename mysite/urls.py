@@ -4,6 +4,10 @@ from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 from . import api_url
+
+from django.contrib import admin
+admin.autodiscover()
+
 urlpatterns = [
     # Examples:
     # url(r'^$', 'mysite.views.home', name='home'),
