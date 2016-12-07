@@ -78,6 +78,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -86,10 +88,9 @@ DATABASES = {
         'PASSWORD': 'galaxyace3110',
         'HOST': '', # Set to empty string for localhost.
         'PORT': '', # Set to empty string for default.
+
     }
 }
-DATABASES['default'] =  dj_database_url.config()
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

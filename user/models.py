@@ -13,8 +13,10 @@ class User(models.Model):
         (False, 'female')
     )
     id = models.AutoField(primary_key=True)
-    MALE_AVATAR = Image.objects.get(id=3)
-    FEMALE_AVATAR = Image.objects.get(id=4)
+    #MALE_AVATAR = Image.objects.get(id=3)
+    #FEMALE_AVATAR = Image.objects.get(id=4)
+    MALE_AVATAR = None
+    FEMALE_AVATAR = None
     djangoUser = models.OneToOneField(DJangoUser, on_delete=models.CASCADE, related_name='customUser', null=True)
     sex = models.NullBooleanField(default=True, blank=True, null=True, choices=SEX)
     created_date = models.DateTimeField(default=timezone.now, null=True)
