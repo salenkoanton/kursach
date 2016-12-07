@@ -19,6 +19,9 @@ body {
     background-color: #fff;
     border-radius:5px;
 }
+.addAudioBtn {
+    height 32px;
+}
 /* Custom page header */
 .header {
   height: 55px;

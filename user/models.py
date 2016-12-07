@@ -6,7 +6,7 @@ class Image(models.Model):
     url = models.URLField(null=True)
     file = models.ImageField(upload_to = 'img/', null=True)
     def dict(self):
-        return {'id': self.id, 'url': self.url}
+        return {'id': self.id, 'url': self.file.url}
 class User(models.Model):
     SEX = (
         (True, 'male'),

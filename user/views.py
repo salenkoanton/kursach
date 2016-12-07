@@ -139,6 +139,7 @@ def auth(request):
         print(params.keys())
         try:
             try:
+
                 user = DJangoUser.objects.get(username=params['username'])
                 if user is not None:
                     return render(request, 'auth.html', {'error': 'Error, we already have a user with such name'})
@@ -153,9 +154,11 @@ def auth(request):
                 except:
                     print(sys.exc_info())
                     print('success')
+            if params['password'] != params['password_repeat']:
+                return render(request, 'auth.html', {'error': "Passwords don't matches"})
             user = DJangoUser.objects.create_user(params['username'], params['email'], params['password'])
             user.last_name = params['lastname']
-            user.first_name = params['firstname'];
+            user.first_name = params['firstname']
             user.save()
             cus_us = User.objects.create(djangoUser=user, birthdate=params['birthdate'])
             if params['sex'] == 'male':
@@ -165,15 +168,19 @@ def auth(request):
                 cus_us.sex = False
                 cus_us.avatar = User.FEMALE_AVATAR
             cus_us.save()
+            return redirect('/blog/' + str(cus_us.id) + '/wall')
         except ValueError:
             params = {}
-        print(params)
-        return render(request, 'auth.html', {'error': 'Invalid input'})
+            return render(request, 'auth.html', {'error': 'Some error on server'})
+
 
 
 def main(request):
-    return render(request, "main.html", {request})
-
+    if request.user.is_authenticated():
+        you = request.user.customUser
+    else:
+        you = None
+    return render(request, "main.html", {'you': you})
 
 class Author_id(View):
     def get(self, request, path):
@@ -184,20 +191,56 @@ class Author_id(View):
         a = Author.objects.get(id=int(path))
         return render(request, "author.html", {'author': a, 'you': you})
 
-
     def post(self, request, path):
         user = request.user
         params = request.POST
         try:
-            user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+            xhr = request.POST['xhr']
         except:
-            print("Unexpected error:", sys.exc_info())
+            xhr = False
+        response_dict = {}
+        print(request.POST)
+        if 'add' in params:
+            try:
+                user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+                response_dict = {'status': 'ok'}
+            except:
+                print("Unexpected error:", sys.exc_info())
+                response_dict = {'status': 'error'}
+            if xhr == 'true':
+                return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
         return self.get(request, path)
+
 
 def authors(request):
     if request.user.is_authenticated():
-        you = request.user.customUser;
+        you = request.user.customUser
     else:
         you = None
     a = Author.objects.all().order_by('name')
     return render(request, "all.html", {'authors': a, 'you': you})
+
+def search(request):
+    if request.user.is_authenticated():
+        you = request.user.customUser
+    else:
+        you = None
+    audios = Audio.objects.none()
+    flag = True
+    if 'search' in request.GET:
+        search = request.GET['search'].split()
+        for val in search:
+            if flag:
+                newaudios = Audio.objects.filter(name__icontains = val)
+                if newaudios:
+                    audios = newaudios
+                else:
+                    continue
+                flag = False
+            else:
+                newaudios = audios & Audio.objects.filter(name__icontains = val)
+                if newaudios:
+                    audios = newaudios
+    if request.GET.__contains__('xhr'):
+        return HttpResponse(json.dumps([i.dict() for i in audios]), content_type='application/javascript')
+    return render(request, "search.html", {'audios': audios, 'you': you})

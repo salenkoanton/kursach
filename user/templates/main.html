@@ -27,31 +27,25 @@
   <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
-        <li class="active"><a href="#">Home</a></li>
+        {%if you != None%}
+        <li><a href="/blog/{{you.id}}/wall">Home</a></li>
+        <li><a href="/audio/">Playlist</a></li>
+          {%endif%}
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
-          <li>{{if <a href="/login/">Login</a> </li>
-        <li><form class="navbar-form navbar-left" role="search">
+          <li><a href="{%if you != None%}/logout/{%else%}/login/{%endif%}">{%if you != None%}Logout{%else%}Login{%endif%}</a> </li>
+        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
           <div class="form-group form-group-sm">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" name="search">
           </div>
           <button type="submit" class="btn btn-default btn-sm">Search..</button>
         </form></li>
       </ul>
-      <h3 class="text-muted logo"><img src="{% static 'img/logo.png'%}">Na-na-na</h3>
+      <h3 class="text-muted logo"><img src="{% static 'img/logo_grey.png'%}">Na-na-na</h3>
     </div>
     <div class="container">
       <div class="row marketing">
-          <h2>Playlist</h2>
-        <div class="col-lg-12">
-            {% for audio in playlist %}
-            <div class="post">
-                <p>{{audio.author.name}}-{{audio.name}}</p>
-                <audio src="{{ audio.file.url }}" controls>Your browser don't support audio!</audio>
-                <hr>
-            </div>
-            {% endfor %}
-
+          <a class="btn" href="/authors/">Authors</a>
         </div>
       </div>
 

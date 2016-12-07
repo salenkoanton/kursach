@@ -21,10 +21,7 @@
 
        <script src="{% static 'js/jquery.js'%}"></script>
   <script src="{% static 'js/bootstrap.min.js'%}"></script>
-  </head>
-
-  <body>
-    <script>
+      <script>
     $(document).ready(function(){
         $(".addAudioBtn").click(function(){
             btn = $(this);
@@ -36,13 +33,19 @@
         });
     });
     </script>
+  </head>
+
+  <body>
     <div class="header">
       <ul class="nav nav-pills pull-right small">
+         {%if you != None%}
         <li><a href="/blog/{{you.id}}/wall">Home</a></li>
-        <li  {%if  user == None%}class="active"{%endif%}><a href="/audio/">Playlist</a></li>
+          <li><a href="/audio/">Playlist</a></li>
+
+          {%endif%}
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
-          <li><a href="/logout/">Logout</a> </li>
+          <li><a href="{%if you != None%}/logout/{%else%}/login/{%endif%}">{%if you != None%}Logout{%else%}Login{%endif%}</a> </li>
         <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search" name="search">
@@ -53,66 +56,25 @@
       <h3 class="text-muted logo"><img src="{% static 'img/logo_grey.png'%}">Na-na-na</h3>
     </div>
     <div class="container">
+        <h2>Result</h2>
       <div class="row marketing">
-          <h2>Playlist</h2>
-  <!-- Trigger the modal with a button -->
-          {%if user == None%}
-  <button type="button" class="btn" data-toggle="modal" data-target="#myModal">Add audio</button>
-  <a class="btn pull-right" href="/authors/">Authors</a>
-    <hr>
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-          <form class="form-post" role="form" method="post" enctype="multipart/form-data">
-              <input type="text" class="form-control" placeholder="Author" required autofocus name="author">
-              <input type="text" class="form-control" placeholder="Name" required autofocus name="name">
-              <div class="form-group">
-                  <label for="sel1">Select list:</label>
-                  <select class="form-control" id="sel1" required name="type">
-                    <option value="rock">Rock</option>
-                    <option value="rap">Rap</option>
-                    <option value="hd_c">Hard Core</option>
-                    <option value="metal">Metal</option>
-                  </select>
-              </div>
-                <textarea class="form-control" rows="5" placeholder="Text.." required name="post_text"></textarea>
-                <input type="file" accept="audio/mp3" name="audio" placeholder="add audio...">
-                <button class="btn pull-right" type="submit">Post</button>
-            </form>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-          {%endif%}
-
         <div class="col-lg-12">
-            {% for audio in playlist %}
+            {% for audio in audios%}
             <div class="post">
-                <h4 style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h4>
+                <h4 style="display: inline-block; vertical-align: top;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h4>
+
                 <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
+
                 {% if audio in you.audio.all %}{% else %}
-                    <!--<form class="pull-right" role="form" method="post">
-                        <input type="hidden" name = "add" value="{{audio.id}}">-->
-                        <button class="btn pull-right addAudioBtn" type="submit" value="{{audio.id}}">+
+                    <form class="pull-right" role="form" method="post" action="/audio/">
+                        <input type="hidden" name = "add" value="{{audio.id}}">
+                        <button class="btn pull-right" type="submit">+
                         </button>
-                   <!-- </form>-->
-
+                    </form>
                     {% endif %}
-
                 <hr>
             </div>
             {% endfor %}
-
         </div>
       </div>
 

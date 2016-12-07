@@ -22,9 +22,91 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script>
+       function showComments(id) {
+                    x = document.getElementById(id);
+                    if(x.hasAttribute("hidden")){
+                          x.removeAttribute("hidden");
+                        }
+                    else{
+                    x.setAttribute("hidden", true);}
+                };
+       function addAudioInInput(id, input) {
+            x = document.getElementById(input);
+            if (x.getAttribute("value")){
+                let str = x.getAttribute("value");
+                let list = str.split('_');
+
+                let newstr = "";
+                let removing = false;
+                for (i in list) {
+                    if (list[i] != id){
+                        newstr += list[i] + '_';
+
+                    }
+                    else{
+                        removing = true;
+                    }
+                }
+                if (!removing){
+                    newstr += id;
+                }
+                else{
+                    newstr = newstr.slice(0, -1);
+                }
+
+                x.setAttribute("value", newstr);
+            }
+            else{
+                x.setAttribute("value", id);
+            }
+        };
+    $(document).ready(function(){
+        $(".addAudioBtn").click(function(){
+            btn = $(this);
+            alert(btn.attr("value"));
+            $.ajax({type: "POST", data: {add: btn.attr("value"), xhr: true}, success: function(result){
+                alert(result);
+                btn.hide();
+            }});
+        });
+    });
+    $(document).ready(function(){
+        $("#searchAddButton").click(function(){
+            btn = $(this);
+            inp = $("#searchAdd");
+            alert(inp.val());
+            $.ajax({type: "GET", data: {search: inp.val(), xhr: true}, success: function(result){
+                let audios = jQuery.parseJSON(result);
+                $(".addAudioPost").remove();
+                for (i in audios){
+                    $("#addAudioModal").prepend('<div class="post addAudioPost"><h4 style="display: inline-block;"><a href="/author/' + audios[i].author.id + '">' + audios[i].author.name + '</a> - ' + audios[i].name + '</h4><button class="btn pull-right addAudioInInput" type="submit" value="' + audios[i].id + '">+</button><hr></div>');
+                };
+                audioBtnEvent();
+            }});
+        });
+    });
+    function audioBtnEvent(){
+        $(document).ready(function(){
+            $(".addAudioInInput").click(function(){
+                addAudioInInput($(this).val(), 'addAudioInp');
+                alert($(this).val());
+                 if(this.innerHTML == '+'){
+                    this.innerHTML = '&times;';
+                 }
+                 else {
+                    this.innerHTML = '+';
+                 }
+            });
+        });
+     };
+     audioBtnEvent();
+
+    </script>
   </head>
 
   <body>
+
     <div class="header">
       <ul class="nav nav-pills pull-right small">
         <li {%if you == user%}class="active"{%endif%}><a href="/blog/{{you.id}}/wall">Home</a></li>
@@ -32,9 +114,9 @@
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="/logout/">Logout</a> </li>
-        <li><form class="navbar-form navbar-left" role="search">
+        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
           <div class="form-group form-group-sm">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" name="search">
           </div>
           <button type="submit" class="btn btn-default btn-sm">Search..</button>
         </form></li>
@@ -95,45 +177,100 @@
       <div class="row marketing">
           <h2>Wall</h2>
         <div class="col-lg-12">
-            <form class="form-post" role="form" method="post">
+            <form class="form-post" role="form" method="post" enctype="multipart/form-data">
                 <textarea class="form-control" rows="5" placeholder="Write smth" required name="post_text"></textarea>
-                <button class="btn pull-right" type="submit">Post</button>
+                <button class="btn btn-default pull-right" type="submit">Post</button>
+                <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addAudio">Add audio</button>
+                <input id="addAudioInp" name = "audios" hidden>
+                <label class="btn btn-default btn-file pull-right">
+                    Add image <input type="file" accept="image/jpeg image/png image/bmp image/jpg" style="display: none;" name="post_image">
+                </label>
             </form>
-            <script>
-                function showComments(id) {
-                    x = document.getElementById(id);
-                    if(x.hasAttribute("hidden")){
-                          x.removeAttribute("hidden");
-                        }
-                    else{
-                    x.setAttribute("hidden", true);}
-                }
-            </script>
+
+
+
+
+
+            <div class="modal fade" id="addAudio" role="dialog">
+                    <div class="modal-dialog">
+
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Choose audios</h4>
+                        </div>
+                          <div class="input-group">
+
+                                <input type="text" class="form-control" placeholder="Search" name="addSearch" id="searchAdd">
+                               <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default pull-right btn-inline" id="searchAddButton">Search</button>
+                                  </span>
+                          </div>
+                        <div class="modal-body" id="addAudioModal">
+                             {% for audio in you.audio.all %}
+                            <div class="post addAudioPost">
+                                <h4 style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h4>
+                                        <button class="btn pull-right addAudioInInput" type="submit" value="{{audio.id}}">+</button>
+                                <hr>
+                            </div>
+                            {% endfor %}
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
           {% for post in posts reversed %}
             <div class="post">
                 <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="/blog/{{post.creator.id}}/wall">{{ post.creator.djangoUser.first_name }} {{ post.creator.djangoUser.last_name }}</a></h4>
-              <p> {{ post.text }} </p>
+
+                <p class="img-container">
+                    {%for img in post.image.all%}
+                    <img src="{{ img.file.url }}">
+                    {%endfor%}
+                </p>
+                <p> {{ post.text }} </p>
+                {% for audio in post.audio.all %}
+                <div class="post">
+                    <h6 style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h6>
+                    <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
+                    {% if audio in you.audio.all %}{% else %}
+
+                            <button class="btn pull-right addAudioBtn" type="submit" value="{{audio.id}}">+
+                            </button>
+
+                        {% endif %}
+                </div>
+            {% endfor %}
+                {%if post.audio.all%}
+                <hr>
+                {%endif%}
                 <div class="pull-right">
                     <form class="pull-right likes" role="form" method="post">
                         <input type="hidden" name = "like" value="{{post.id}}">
                         <button class="btn pull-right dropdown" type="submit">{{post.likes.count}}♥
                         </button>
+                        {%if post.likes.count > 0%}
                         <ul class="liked">
 
-                        {% for user in post.likes.all|slice:":5" %}<li>
-                            <a href="/blog/{{user.id}}/wall"><img src="{{user.avatar.file.url}}" title="{{user.djangoUser.first_name}} {{user.djangoUser.last_name}}" class="avatar-ico"></a>
-                        </li>
+                            {% for user in post.likes.all|slice:":5" %}
+                            <li>
+                                <a href="/blog/{{user.id}}/wall"><img src="{{user.avatar.file.url}}" title="{{user.djangoUser.first_name}} {{user.djangoUser.last_name}}" class="avatar-ico"></a>
+                            </li>
                             {% endfor %}
 
 
-                    </ul>
+                        </ul>
+                        {%endif%}
                     </form>
 
-                    <button class="btn" onclick="showComments('comments-{{post.id}}')">Comments</button>
+                    <button class="btn" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
 
                 </div>
                 <div class = "row marketing" id="comments-{{post.id}}" hidden>
-                    <hr>
+
                     {% for comment in post.comments.all %}
                         <h5 class="user-container"><img src="{{ comment.owner.avatar.file.url }}" class="avatar-ico"><a href="blog/{{comment.owner.id}}/wall">{{ comment.owner.djangoUser.first_name }} {{ comment.owner.djangoUser.last_name }}</a></h5>
                         <p> {{ comment.text }} </p>

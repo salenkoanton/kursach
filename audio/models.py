@@ -23,4 +23,9 @@ class Audio(models.Model):
     type = ArrayField(models.CharField(max_length=5, choices=TYPE), size = 40)
     duration = models.TimeField(default=None)
     def dict(self):
-        return  {'id' : self.id, 'author': {'id' : self.author.id, 'name' : self.author.name}, 'name': self.name, 'types': [i for i in self.type]}
+        return  {'id' : self.id,
+                 'author': {'id' : self.author.id,
+                            'name' : self.author.name},
+                 'name': self.name,
+                 'url': self.file.url,
+                 'types': [i for i in self.type]}

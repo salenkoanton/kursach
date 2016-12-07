@@ -1,0 +1,6 @@
+myvenv
+media
+*.pyc
+staticfiles
+.env
+db.sqlite3

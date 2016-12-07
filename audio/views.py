@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -6,7 +7,7 @@ from django.contrib.auth.models import User as djUser
 from user.models import User, Author, Image
 from mysite import settings
 from .forms import UploadFileForm
-import os, sys
+import os, sys, json
 from .models import Audio
 def handle_uploaded_file(f):
     with open(os.path.join(settings.MEDIA_ROOT, f.name), 'wb+') as destination:
@@ -22,31 +23,58 @@ class Playlist(View):
     def post(self, request):
         user = request.user
         params = request.POST
-
         try:
-            author = Author.objects.get(name = params['author'])
+            xhr = request.POST['xhr']
         except:
-            author = Author.objects.create(name = params['author'], information = '')
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(request.FILES['audio'])
-        a = Audio.objects.create(text = params['post_text'],
-                                 author = author,
-                                 name = params['name'],
-                                 file = request.FILES['audio'],
-                                 type = [params['type']],
-                                 duration = '00:00:00')
-        user.customUser.audio.add(a)
-        a.save()
+            xhr = False
+        response_dict = {}
+        print(request.POST)
+        if 'add' in params:
+            try:
+                user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+                response_dict = {'status': 'ok'}
+            except:
+                print("Unexpected error:", sys.exc_info())
+                response_dict = {'status': 'error'}
+            if xhr:
+                return HttpResponse(json.dumps(response_dict), mimetype='application/javascript')
+            return self.get(request)
+        else:
+            try:
+                author = Author.objects.get(name = params['author'])
+            except:
+                author = Author.objects.create(name = params['author'], information = '')
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                handle_uploaded_file(request.FILES['audio'])
+            a = Audio.objects.create(text = params['post_text'],
+                                     author = author,
+                                     name = params['name'],
+                                     file = request.FILES['audio'],
+                                     type = [params['type']],
+                                     duration = '00:00:00')
+            user.customUser.audio.add(a)
+            a.save()
         return self.get(request)
 class Audios_id(View):
     def post(self, request, path):
         user = request.user
         params = request.POST
         try:
-            user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+            xhr = request.POST['xhr']
         except:
-            print("Unexpected error:", sys.exc_info())
+            xhr = False
+        response_dict = {}
+        print(request.POST)
+        if 'add' in params:
+            try:
+                user.customUser.audio.add(Audio.objects.get(id=int(params['add'])))
+                response_dict = {'status': 'ok'}
+            except:
+                print("Unexpected error:", sys.exc_info())
+                response_dict = {'status': 'error'}
+            if xhr == 'true':
+                return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
         return self.get(request, path)
     def get(self, request, path):
 

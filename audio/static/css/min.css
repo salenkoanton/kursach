@@ -88,7 +88,10 @@ body {
 .marketing p + h4 {
   margin-top: 28px;
 }
-
+#addAudioBtn{
+    height: 32px;
+    width: 32px;
+}
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
