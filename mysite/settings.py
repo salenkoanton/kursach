@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 DATABASES = {
-    # 'default': {
+     'default': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #     'NAME': 'mydb',
     #     'USER': 'postgres',
@@ -89,7 +89,7 @@ DATABASES = {
     #     'HOST': '', # Set to empty string for localhost.
     #     'PORT': '', # Set to empty string for default.
     #
-    # }
+    }
 }
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
