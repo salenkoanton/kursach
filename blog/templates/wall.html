@@ -113,7 +113,7 @@
     $(document).ready(function(){
         $(".Like").click(function(){
             btn = $(this);
-            $.ajax({type: "POST", data: {like: btn.attr("value"), xhr: true}, success: function(result){
+            $.ajax({type: "POST", data: {like: btn.val(), xhr: true}, success: function(result){
                 alert(result);
             }});
         });
