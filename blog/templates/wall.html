@@ -23,6 +23,33 @@
        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <script>
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
        function showComments(id) {
                     x = document.getElementById(id);
                     if(x.hasAttribute("hidden")){
@@ -118,7 +145,7 @@
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="/logout/">Logout</a> </li>
-        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
+        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">{% csrf_token %}
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search" name="search">
           </div>
@@ -141,7 +168,7 @@
                 <p><a href="/blog/{{user.id}}/followers">Followers</a></p>
                 <p><a href="/audio/{{user.id}}">Audio</a></p>
                 {% if you != user %}
-                <form class="pull-left" role="form" method="post">
+                <form class="pull-left" role="form" method="post">{% csrf_token %}
                     <input value="{{user.id}}" name="follow" hidden>
                     <button class="btn pull-right dropdown" type="submit">{%if you in user.followers.all%}Unfollow{%else%}Follow{%endif%}</button>
                 </form>
@@ -160,7 +187,7 @@
                           <h4 class="modal-title">Upload new image for avatar</h4>
                         </div>
                         <div class="modal-body">
-                          <form class="form-post" role="form" method="post" enctype="multipart/form-data">
+                          <form class="form-post" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
                                 <input type="file" accept="image/jpeg image/png image/bmp image/jpg" name="image" placeholder="add image">
                                 <button class="btn pull-right" type="submit">Upload</button>
                             </form>
@@ -181,7 +208,7 @@
       <div class="row marketing">
           <h2>Wall</h2>
         <div class="col-lg-12">
-            <form class="form-post" role="form" method="post" enctype="multipart/form-data">
+            <form class="form-post" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
                 <textarea class="form-control" rows="5" placeholder="Write smth" required name="post_text"></textarea>
                 <button class="btn btn-default pull-right" type="submit">Post</button>
                 <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addAudio">Add audio</button>
@@ -277,7 +304,7 @@
                         <p> {{ comment.text }} </p>
                         <hr>
                     {% endfor %}
-                    <form class="form-post" role="form" method="post">
+                    <form class="form-post" role="form" method="post">{% csrf_token %}
                         <textarea class="form-control" rows="3" placeholder="Write smth" required name="comment_text"></textarea>
                         <input type="hidden" name = "id" value="{{post.id}}">
                         <button class="btn pull-right" type="submit">Comment</button>
