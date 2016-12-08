@@ -111,7 +111,7 @@
         });
     });
     $(document).ready(function(){
-        $(".Like").click(function(){
+        $(".like").click(function(){
             btn = $(this);
             alert(btn.attr("value"));
             $.ajax({type: "POST", data: {like: btn.attr("value"), xhr: true}, success: function(result){
@@ -280,7 +280,7 @@
                 <hr>
                 {%endif%}
                 <div class="pull-right Like">
-                        <button class="btn pull-right dropdown" value="{{post.id}}">{{post.likes.count}}♥
+                        <button class="btn pull-right dropdown like" value="{{post.id}}">{{post.likes.count}}♥
                         </button>
                         {%if post.likes.count > 0%}
                         <ul class="liked">
