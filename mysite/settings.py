@@ -104,6 +104,7 @@ USE_L10N = True
 USE_TZ = True
 
 
+#STATICFILES_STORAGE = 'storages.backends.apache_libcloud.LibCloudStorage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -118,10 +119,15 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT= os.path.join(PROJECT_ROOT, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://storage.googleapis.com/garage-fun-1509/media/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+GS_ACCESS_KEY_ID = 'GOOGJWOB2QCHE2LYO3MW'
+GS_SECRET_ACCESS_KEY = 'ECcIhakXjtu9JbquLXedTnhpK99wBKWAmTbIld+n'
+GS_BUCKET_NAME = 'garage-fun-1509'
+STATICFILES_STORAGE = 'storages.backends.gs.GSBotoStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gs.GSBotoStorage'

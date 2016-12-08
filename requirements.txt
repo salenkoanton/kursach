@@ -1,6 +1,8 @@
+boto==2.43.0
 dj-database-url==0.4.1
-Django==1.9.7
+Django==1.8
+django-storages==1.5.1
 gunicorn==19.6.0
-psycopg2==2.6.1
-whitenoise==2.0.6
 Pillow==3.4.2
+psycopg2==2.6.2
+whitenoise==3.2.2
