@@ -6,7 +6,7 @@ body {
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .Like{
-height: 27px;
+height: 32px;
 width:60px;
 display:inline-block;
 }
@@ -50,7 +50,7 @@ body {
     width:32px;
 }
 
-.Like:hover > .liked{
+.Like:hover .liked{
     visibility:visible;
 }
 .header,
