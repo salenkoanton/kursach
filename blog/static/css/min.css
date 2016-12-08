@@ -50,7 +50,7 @@ body {
     width:32px;
 }
 
-.Like:hover .liked{
+.Like:hover > .liked{
     visibility:visible;
 }
 .header,

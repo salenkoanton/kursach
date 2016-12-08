@@ -251,8 +251,8 @@
                 {%if post.audio.all%}
                 <hr>
                 {%endif%}
-                <div class="pull-right">
-                        <button class="btn pull-right dropdown Like" value="{{post.id}}">{{post.likes.count}}♥
+                <div class="pull-right Like">
+                        <button class="btn pull-right dropdown" value="{{post.id}}">{{post.likes.count}}♥
                         </button>
                         {%if post.likes.count > 0%}
                         <ul class="liked">
