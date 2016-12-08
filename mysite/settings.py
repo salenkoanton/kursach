@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #'storages',
     'blog',
     'user',
     'audio',
@@ -129,5 +130,5 @@ STATICFILES_DIRS = (
 GS_ACCESS_KEY_ID = 'GOOGJWOB2QCHE2LYO3MW'
 GS_SECRET_ACCESS_KEY = 'ECcIhakXjtu9JbquLXedTnhpK99wBKWAmTbIld+n'
 GS_BUCKET_NAME = 'garage-fun-1509'
-STATICFILES_STORAGE = 'storages.backends.gs.GSBotoStorage'
+#STATICFILES_STORAGE = 'storages.backends.gs.GSBotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.gs.GSBotoStorage'
