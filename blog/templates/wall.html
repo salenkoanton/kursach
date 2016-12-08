@@ -64,9 +64,7 @@
     $(document).ready(function(){
         $(".addAudioBtn").click(function(){
             btn = $(this);
-            alert(btn.attr("value"));
             $.ajax({type: "POST", data: {add: btn.attr("value"), xhr: true}, success: function(result){
-                alert(result);
                 btn.hide();
             }});
         });
@@ -75,7 +73,6 @@
         $("#searchAddButton").click(function(){
             btn = $(this);
             inp = $("#searchAdd");
-            alert(inp.val());
             $.ajax({type: "GET", data: {search: inp.val(), xhr: true}, success: function(result){
                 let audios = jQuery.parseJSON(result);
                 $(".addAudioPost").remove();
@@ -89,7 +86,6 @@
     $(document).ready(function(){
         $(".Like").click(function(){
             btn = $(this);
-            alert(btn.attr("value"));
             $.ajax({type: "POST", data: {like: btn.attr("value"), xhr: true}, success: function(result){
                 alert(result);
             }});
@@ -99,7 +95,6 @@
         $(document).ready(function(){
             $(".addAudioInInput").click(function(){
                 addAudioInInput($(this).val(), 'addAudioInp');
-                alert($(this).val());
                  if(this.innerHTML == '+'){
                     this.innerHTML = '&times;';
                  }
