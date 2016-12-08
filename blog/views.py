@@ -73,7 +73,7 @@ class Wall(View):
                         else:
                             print('form invalid')
                 except:
-                    print('error in images')
+                    print("Unexpected error:", sys.exc_info())
                 p = Post.objects.create(text = request.POST['post_text'], creator = request.user.customUser, owner = User.objects.get(id=int(path)))
                 for audio in audios_id:
                     p.audio.add(Audio.objects.get(id=int(audio)))
