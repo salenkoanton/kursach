@@ -98,7 +98,7 @@ class Wall(View):
                 else:
                     p.likes.add(request.user.customUser)
                 p.save()
-                response_dict = {'status': 'ok', 'likes_count' : p.likes.count}
+                response_dict = {'status': 'ok', 'likes_count' : p.likes.count()}
             except:
                 print("Unexpected error:", sys.exc_info())
                 response_dict = {'status': 'error'}
