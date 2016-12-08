@@ -295,9 +295,10 @@
                         </ul>
                         {%endif%}
 
-                    <button class="btn pull-right" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
+
 
                 </div>
+                <button class="btn pull-right" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
                 <div class = "row marketing" id="comments-{{post.id}}" hidden>
 
                     {% for comment in post.comments.all %}
