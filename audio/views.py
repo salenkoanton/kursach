@@ -36,7 +36,7 @@ class Playlist(View):
             except:
                 print("Unexpected error:", sys.exc_info())
                 response_dict = {'status': 'error'}
-            if xhr:
+            if xhr == 'true':
                 return HttpResponse(json.dumps(response_dict), mimetype='application/javascript')
             return self.get(request)
         else:

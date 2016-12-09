@@ -142,7 +142,7 @@
         $(".deletePost").click(function(){
             btn = $(this);
             alert(btn.attr("value"));
-            $.ajax({type: "DELETE", url: $(location).attr('href') + '/' + btn.attr("value"), success: function(result){
+            $.ajax({type: "delete", url: $(location).attr('pathname') + '/' + btn.attr("value"), success: function(result){
                 let res = jQuery.parseJSON(result);
                 if (res.status === 'error'){
                     alert('error');}
