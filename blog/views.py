@@ -66,7 +66,7 @@ class Wall(View):
                     if 'post_image' in request.FILES:
                         form = PostImageForm(request.POST, request.FILES)
                         if form.is_valid():
-                            handle_uploaded_file(request.FILES['post_image'])
+                            #handle_uploaded_file(request.FILES['post_image'])
                             img = Image.objects.create(file=request.FILES['post_image'])
                             img.save()
                             images.append(img)
