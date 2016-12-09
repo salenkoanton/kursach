@@ -166,8 +166,9 @@ def following(request):
     return render(request, "followers.html",
                   {'you': request.user.customUser, 'followers': f, 'follow': False})
 @login_required(login_url='/login/')
-def del_post(request, path):
-    id = int(path)
+def del_post(request, path1, path2):
+    id = int(path2)
+    print(path1, path2)
     you = request.user.customUser
     response_dict = {'status': 'wrong method'}
     if request.method == 'DELETE':
