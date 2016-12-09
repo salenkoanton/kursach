@@ -249,6 +249,23 @@ def search(request):
                 newaudios = audios & Audio.objects.filter(name__icontains = val)
                 if newaudios:
                     audios = newaudios
+    flag = True
+    authors =  Audio.objects.none()
+    if 'search' in request.GET:
+        search = request.GET['search'].split()
+        for val in search:
+            if flag:
+                newaudios = Audio.objects.filter(author__name__icontains=val)
+                if newaudios:
+                    authors = newaudios
+                else:
+                    continue
+                flag = False
+            else:
+                newaudios = authors & Audio.objects.filter(author__name__icontains=val)
+                if newaudios:
+                    authors = newaudios
+    audios = audios | authors
     if request.GET.__contains__('xhr'):
         return HttpResponse(json.dumps([i.dict() for i in audios]), content_type='application/javascript')
     return render(request, "search.html", {'audios': audios, 'you': you})
