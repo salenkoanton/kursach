@@ -113,7 +113,6 @@
     $(document).ready(function(){
         $(".like").click(function(){
             btn = $(this);
-            alert(btn.attr("value"));
             $.ajax({type: "POST", data: {like: btn.attr("value"), xhr: true}, success: function(result){
 
                 let res = jQuery.parseJSON(result);
@@ -141,7 +140,6 @@
     $(document).ready(function(){
         $(".deletePost").click(function(){
             btn = $(this);
-            alert(btn.attr("value"));
             $.ajax({type: "delete", url: $(location).attr('pathname') + '/' + btn.attr("value"), success: function(result){
                 let res = jQuery.parseJSON(result);
                 if (res.status === 'error'){

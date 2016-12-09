@@ -55,9 +55,7 @@
     $(document).ready(function(){
         $(".addAudioBtn").click(function(){
             btn = $(this);
-            alert(btn.attr("value"));
             $.ajax({type: "POST", data: {add: btn.attr("value"), xhr: true}, success: function(result){
-                alert(result);
                 btn.hide();
             }});
         });

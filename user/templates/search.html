@@ -52,9 +52,7 @@
     $(document).ready(function(){
         $(".addAudioBtn").click(function(){
             btn = $(this);
-            alert($(location).attr('hostname') + '/audio/');
             $.ajax({type: "POST", url: "audio/", data: {add: btn.attr("value"), xhr: true}, success: function(result){
-                alert(result);
                 btn.hide();
             }});
         });
