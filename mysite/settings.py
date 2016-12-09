@@ -24,9 +24,9 @@ APPEND_SLASH = False
 SECRET_KEY = 'ers8=x61mg&b_wg607!7@vect&glk@xhr@4hx4fbnxee*_d^-p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# Application definition
+
 
 INSTALLED_APPS = (
     'django.contrib.admin',
