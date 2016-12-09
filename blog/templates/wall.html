@@ -318,7 +318,9 @@
 
                 </div>
                 <button class="btn pull-right" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
+                {% if you == post.creator or you == post.owner %}
                 <button class="btn pull-right deletePost" value="{{post.id}}">&times;</button>
+                {% endif %}
                 <div class = "row marketing" id="comments-{{post.id}}" hidden>
 
                     {% for comment in post.comments.all %}
