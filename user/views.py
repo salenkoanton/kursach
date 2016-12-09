@@ -225,6 +225,8 @@ def search(request):
         you = request.user.customUser
     else:
         you = None
+    #if request.POST.__contains__('add'):
+
     audios = Audio.objects.none()
     flag = True
     if 'search' in request.GET:
