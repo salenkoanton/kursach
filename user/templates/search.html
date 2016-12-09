@@ -22,6 +22,33 @@
        <script src="{% static 'js/jquery.js'%}"></script>
   <script src="{% static 'js/bootstrap.min.js'%}"></script>
       <script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
     $(document).ready(function(){
         $(".addAudioBtn").click(function(){
             btn = $(this);
@@ -46,7 +73,7 @@
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="{%if you != None%}/logout/{%else%}/login/{%endif%}">{%if you != None%}Logout{%else%}Login{%endif%}</a> </li>
-        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
+        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">{% csrf_token %}
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search" name="search">
           </div>
@@ -66,11 +93,9 @@
                 <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
 
                 {% if audio in you.audio.all %}{% else %}
-                    <form class="pull-right" role="form" method="post" action="/audio/">
-                        <input type="hidden" name = "add" value="{{audio.id}}">
-                        <button class="btn pull-right" type="submit">+
+                <button class="btn pull-right addAudioBtn" type="submit" value="{{audio.id}}">+
                         </button>
-                    </form>
+
                     {% endif %}
                 <hr>
             </div>

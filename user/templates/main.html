@@ -34,7 +34,7 @@
         <li><a href="#">About</a></li>
         <li><a href="#">Contact</a></li>
           <li><a href="{%if you != None%}/logout/{%else%}/login/{%endif%}">{%if you != None%}Logout{%else%}Login{%endif%}</a> </li>
-        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">
+        <li><form class="navbar-form navbar-left" role="search" action="/search" method="get">{% csrf_token %}
           <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Search" name="search">
           </div>

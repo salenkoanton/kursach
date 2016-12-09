@@ -165,3 +165,17 @@ def following(request):
     f = request.user.customUser.following.all()
     return render(request, "followers.html",
                   {'you': request.user.customUser, 'followers': f, 'follow': False})
+@login_required(login_url='/login/')
+def del_post(request, path):
+    id = int(path)
+    you = request.user.customUser
+    response_dict = {'status': 'wrong method'}
+    if request.method == 'DELETE':
+        p = Post.objects.get(id=id)
+        if p.creator == you or p.owner == you:
+            p.delete()
+            response_dict = {'status' : 'ok'}
+            print('deleted')
+        else:
+            response_dict = {'status': 'error'}
+    return HttpResponse(json.dumps(response_dict), content_type='application/javascript')

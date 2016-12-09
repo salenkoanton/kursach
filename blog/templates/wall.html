@@ -138,7 +138,20 @@
         });
      };
      audioBtnEvent();
+    $(document).ready(function(){
+        $(".deletePost").click(function(){
+            btn = $(this);
+            alert(btn.attr("value"));
+            $.ajax({type: "DELETE", url: $(location).attr('href') + '/' + btn.attr("value"), success: function(result){
+                let res = jQuery.parseJSON(result);
+                if (res.status === 'error'){
+                    alert('error');}
+                else
+                    {$("#post_" + btn.attr("value")).remove();}
+            });
 
+        }});
+    });
     </script>
   </head>
 
@@ -260,6 +273,7 @@
                     </div>
                   </div>
           {% for post in posts reversed %}
+            <div id="post_{{post.id}}">
             <div class="post">
                 <h4 class="user-container"><img src="{{ post.creator.avatar.file.url }}" class="avatar-ico"><a href="/blog/{{post.creator.id}}/wall">{{ post.creator.djangoUser.first_name }} {{ post.creator.djangoUser.last_name }}</a></h4>
 
@@ -270,7 +284,7 @@
                 </p>
                 <p> {{ post.text }} </p>
                 {% for audio in post.audio.all %}
-                <div class="post">
+                <div class="post" >
                     <h6 style="display: inline-block;"><a href="/author/{{audio.author.id}}">{{audio.author.name}}</a> - {{audio.name}}</h6>
                     <audio src="{{ audio.file.url }}" controls class="pull-right">Your browser don't support audio!</audio>
                     {% if audio in you.audio.all %}{% else %}
@@ -304,6 +318,7 @@
 
                 </div>
                 <button class="btn pull-right" onclick="showComments('comments-{{post.id}}')">{{post.comments.count}} Comments</button>
+                <button class="btn pull-right" value="{{post.id}}">&times;</button>
                 <div class = "row marketing" id="comments-{{post.id}}" hidden>
 
                     {% for comment in post.comments.all %}
@@ -319,7 +334,7 @@
                 </div>
               <br>
                 <hr>
-            </div>
+            </div></div>
             {% endfor %}
         </div>
       </div>
