@@ -176,10 +176,16 @@ def auth(request):
 
 
 def main(request):
+    print('sdfsdfvsdfvsdfvsdfv')
     if request.user.is_authenticated():
         you = request.user.customUser
+
+        print('srbv   srfg      bqwrgnr   yjmne')
     else:
         you = None
+
+        print('sdfsdfvsdfvsdfvsdfv')
+    print('sdfsdfvsdfvsdfvsdfv')
     return render(request, "main.html", {'you': you})
 
 class Author_id(View):

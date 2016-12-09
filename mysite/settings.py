@@ -24,7 +24,7 @@ APPEND_SLASH = False
 SECRET_KEY = 'ers8=x61mg&b_wg607!7@vect&glk@xhr@4hx4fbnxee*_d^-p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 
@@ -130,5 +130,5 @@ STATICFILES_DIRS = (
 GS_ACCESS_KEY_ID = 'GOOGJWOB2QCHE2LYO3MW'
 GS_SECRET_ACCESS_KEY = 'ECcIhakXjtu9JbquLXedTnhpK99wBKWAmTbIld+n'
 GS_BUCKET_NAME = 'garage-fun-1509'
-STATICFILES_STORAGE = 'storages.backends.gs.GSBotoStorage'
+#STATICFILES_STORAGE = 'storages.backends.gs.GSBotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.gs.GSBotoStorage'
