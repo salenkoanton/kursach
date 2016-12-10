@@ -126,9 +126,9 @@ class Login(View):
                 except:
                     return redirect('/blog/' + str(user.customUser.id) + '/wall')
             else:
-                return HttpResponse(json.dumps({'login': 'error disabled'}), content_type="application/json")
+                return render(request, 'login.html', {'login': 'error disabled'})
         else:
-            return HttpResponse(json.dumps({'login': "error pass don't manch"}), content_type="application/json")
+            return render(request, 'login.html', {'login': "error pass don't manch"})
 
 
 def auth(request):
